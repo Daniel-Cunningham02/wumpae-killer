@@ -2,8 +2,8 @@ from logic import *
 from utils import *
 
 base = FolKB([expr("Adjacent(x, y) ==> Adjacent(y, x)"),
-            expr("Unvisited(x) & Adjacent(x, y) & Breeze(y) & Breeze(x, z) & Breeze(z) ==> Pit(x)"),
-            expr("Unvisited(x) & Adjacent(x, y) & Stench(y) & Notwumpus(x) ==> Wumpus(x)"),
+            expr("Unvisited(x) & Adjacent(x, y) & Breeze(y) ==> Pit(x)"),
+            expr("Unvisited(x) & Adjacent(x, y) & Stench(y) ==> Wumpus(x)"),
             expr("Wumpus(x) & Pit(x) ==> Unsafe(x)"),
             expr("Visited(x) ==> Safe(x)"),
             expr("Breeze(y) & Adjacent(x, y) ==> Danger(x)"),
@@ -119,11 +119,8 @@ def check_if_visited(location):
     return False
 
 def checkForWumpae(location):
-    if base.ask(expr('Stench(x)')) == False:
-        return None
-    
     for i in find_adjacent(location):
-        if(base.ask(expr("Wumpus({})".format(locToString(i))))):
+        if base.ask(expr("Wumpus(x)")):
             return i
     return None
 
@@ -142,11 +139,8 @@ def shootWumpus(location, wumpusLocation):
         return 'FS'
     
 def findSafeSquare(location):
-    print(base.ask(expr('Danger(x)')))
-    if base.ask(expr('Danger(x)')) == False:
-        return None
     for i in find_adjacent(location):
-        if base.ask(expr('Danger({})'.format(locToString(i)))) == False:
+        if base.ask(danger(i)) == False:
             return i
     return None
 
